@@ -1,18 +1,7 @@
-"""Pacman, classic arcade game.
-
-Exercises
-
-1. Change the board.
-2. Change the number of ghosts.
-3. Change where pacman starts.
-4. Make the ghosts faster/slower.
-5. Make the ghosts smarter.
-"""
-
 from random import choice
 from turtle import *
-
 from freegames import floor, vector
+import math
 
 state = {'score': 0}
 path = Turtle(visible=False)
@@ -52,7 +41,6 @@ tiles = [
 
 
 def square(x, y):
-    """Draw square using path at (x, y)."""
     path.up()
     path.goto(x, y)
     path.down()
@@ -66,7 +54,6 @@ def square(x, y):
 
 
 def offset(point):
-    """Return offset of point in tiles."""
     x = (floor(point.x, 20) + 200) / 20
     y = (180 - floor(point.y, 20)) / 20
     index = int(x + y * 20)
@@ -74,7 +61,6 @@ def offset(point):
 
 
 def valid(point):
-    """Return True if point is valid in tiles."""
     index = offset(point)
 
     if tiles[index] == 0:
@@ -89,7 +75,6 @@ def valid(point):
 
 
 def world():
-    """Draw world using path."""
     bgcolor('black')
     path.color('blue')
 
@@ -108,7 +93,6 @@ def world():
 
 
 def move():
-    """Move pacman and all ghosts."""
     writer.undo()
     writer.write(state['score'])
 
@@ -131,6 +115,10 @@ def move():
     dot(20, 'yellow')
 
     for point, course in ghosts:
+        dx = point.x - pacman.x
+        dy = point.y - pacman.y
+        best_distance = math.sqrt(dx**2 + dy**2)
+
         if valid(point + course):
             point.move(course)
         else:
@@ -140,9 +128,21 @@ def move():
                 vector(0, 5),
                 vector(0, -5),
             ]
-            plan = choice(options)
-            course.x = plan.x
-            course.y = plan.y
+            best_plan = course
+            best_distance = 100000
+            
+            for plan in options:
+                dx = (point + plan).x - pacman.x
+                dy = (point + plan).y - pacman.y
+                distance = math.sqrt(dx**2 + dy**2)
+                
+                if distance < best_distance and valid(point + plan):
+                    best_distance = distance
+                    best_plan = plan
+            
+            course.x = best_plan.x
+            course.y = best_plan.y
+            point.move(course)
 
         up()
         goto(point.x + 10, point.y + 10)
@@ -158,7 +158,6 @@ def move():
 
 
 def change(x, y):
-    """Change pacman aim if valid."""
     if valid(pacman + vector(x, y)):
         aim.x = x
         aim.y = y
