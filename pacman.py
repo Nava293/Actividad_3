@@ -43,6 +43,11 @@ tiles = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 ]
+<<<<<<< HEAD
+=======
+# fmt: on
+#cambio del mapa. Cada 1 = parte del mapa por la que los fantasmas y pacman se pueden mover, y cada 0 = a un lugar en negro. 
+>>>>>>> 033e6b6 (Comentarios)
 
 #Función donde se genera el camino que pacman puede seguir
 def square(x, y):
@@ -164,7 +169,7 @@ def move():
         if abs(pacman - point) < 20:
             return
 
-    ontimer(move, 30)
+    ontimer(move, 30) #<-- el 30 es la velocidad de los fantasmas, mientras más pequeño sea el número, más rápido se mueven 
 
 #Cambio de dirección de pacman, usado para cuando se presiona una tecla asignada a una dirección
 def change(x, y):
